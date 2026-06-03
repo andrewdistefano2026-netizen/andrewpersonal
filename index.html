@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Andrew DiStefano | Personal Website</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      color: #020617;
+      background: #ffffff;
+      line-height: 1.5;
+    }
+    button, a { font: inherit; }
+    .container { max-width: 1152px; margin: 0 auto; padding: 0 20px; }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(226,232,240,0.8);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      max-width: 1152px;
+      margin: 0 auto;
+    }
+    .brand-button {
+      border: none;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      padding: 0;
+    }
+    .brand-name { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: #020617; }
+    .brand-subtitle { font-size: 12px; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: #64748b; }
+    .nav-links { display: flex; gap: 8px; }
+    .nav-button {
+      border: none;
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      background: transparent;
+      color: #334155;
+    }
+    .nav-button:hover { background: #f1f5f9; }
+    .nav-button.active { background: #020617; color: #ffffff; }
+    .mobile-dots { display: none; gap: 8px; }
+    .mobile-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: none;
+      background: #cbd5e1;
+      cursor: pointer;
+    }
+    .mobile-dot.active { background: #020617; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      color: #ffffff;
+      background: linear-gradient(135deg, #020617, #0f172a, #1e293b);
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 10% 12%, rgba(255,255,255,0.25), transparent 22%),
+        radial-gradient(circle at 88% 86%, rgba(148,163,184,0.28), transparent 28%);
+      opacity: 0.8;
+    }
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 40px;
+      padding: 86px 20px;
+      max-width: 1152px;
+      margin: 0 auto;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .pill-dark { border: 1px solid rgba(255,255,255,0.22); background: rgba(255,255,255,0.1); color: #f1f5f9; }
+    .pill-light { background: #f1f5f9; color: #475569; }
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 64px);
+      line-height: 1.03;
+      margin: 0;
+      letter-spacing: -0.04em;
+    }
+    .hero p {
+      margin-top: 24px;
+      max-width: 680px;
+      font-size: 18px;
+      line-height: 1.8;
+      color: #e2e8f0;
+    }
+    .hero-actions { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: 0.2s ease;
+    }
+    .button-white { background: #ffffff; color: #020617; }
+    .button-white:hover { background: #f1f5f9; }
+    .button-outline { border: 1px solid rgba(255,255,255,0.32); background: transparent; color: #ffffff; }
+    .button-outline:hover { background: rgba(255,255,255,0.1); }
+    .headshot-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .headshot-card {
+      width: 100%;
+      max-width: 384px;
+      border-radius: 32px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.1);
+      padding: 16px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+      backdrop-filter: blur(12px);
+    }
+    .headshot-frame {
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      border-radius: 24px;
+      background: #e2e8f0;
+    }
+    .headshot-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    section.main-section, main.main-section { padding: 56px 20px; max-width: 1152px; margin: 0 auto; }
+    .about-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 32px; }
+    h2.section-title { font-size: 32px; line-height: 1.15; margin: 0; letter-spacing: -0.03em; }
+    .muted { color: #64748b; }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.05);
+    }
+    .card-content { padding: 28px; }
+    .card-content p { margin-top: 0; color: #334155; line-height: 1.75; }
+    .card-content p:last-child { margin-bottom: 0; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 48px; }
+    .stat-number { font-size: 32px; font-weight: 800; color: #020617; }
+    .stat-label { margin-top: 4px; font-size: 14px; font-weight: 700; color: #64748b; }
+    .strengths {
+      margin-top: 64px;
+      border-radius: 32px;
+      background: #f1f5f9;
+      padding: 36px;
+    }
+    .strengths-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 32px; }
+    .strengths h3 { margin: 0; font-size: 22px; }
+    .strengths p { color: #64748b; font-size: 14px; line-height: 1.7; }
+    .strength-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .strength-item { background: #fff; border-radius: 18px; padding: 16px 20px; font-size: 14px; font-weight: 800; color: #334155; box-shadow: 0 1px 3px rgba(15,23,42,0.06); }
+    .page-header { margin-bottom: 40px; }
+    .page-header h1 { margin: 20px 0 0; max-width: 930px; font-size: clamp(38px, 5vw, 56px); line-height: 1.05; letter-spacing: -0.045em; }
+    .page-header p { margin-top: 20px; max-width: 760px; color: #64748b; font-size: 18px; line-height: 1.75; }
+    .experience-list { display: grid; gap: 24px; }
+    .experience-card { overflow: hidden; }
+    .experience-grid { display: grid; grid-template-columns: 0.35fr 0.65fr; }
+    .experience-left { background: #020617; color: #ffffff; padding: 28px; }
+    .icon-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      font-weight: 900;
+      margin-bottom: 20px;
+    }
+    .icon-dark { background: #020617; color: #ffffff; }
+    .icon-light { background: rgba(255,255,255,0.1); color: #ffffff; }
+    .experience-left h2 { margin: 0; font-size: 26px; line-height: 1.15; }
+    .experience-left .role { margin-top: 8px; color: #cbd5e1; font-size: 14px; font-weight: 700; }
+    .experience-left .meta { margin-top: 20px; color: #cbd5e1; font-size: 14px; display: grid; gap: 8px; }
+    .experience-right { padding: 28px; }
+    .experience-right p { color: #334155; line-height: 1.75; margin-top: 0; }
+    ul.clean-list { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 12px; }
+    ul.clean-list li { display: flex; gap: 12px; color: #64748b; font-size: 14px; line-height: 1.65; }
+    .bullet-dot { width: 8px; height: 8px; border-radius: 99px; background: #020617; flex: 0 0 auto; margin-top: 8px; }
+    .activity-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .activity-card { height: 100%; transition: 0.2s ease; }
+    .activity-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(15,23,42,0.08); }
+    .activity-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+    .tag { border-radius: 999px; background: #f1f5f9; color: #475569; padding: 5px 12px; font-size: 12px; font-weight: 800; }
+    .activity-card h2 { margin: 0; font-size: 25px; line-height: 1.18; letter-spacing: -0.02em; }
+    .activity-card .activity-meta { margin-top: 8px; color: #64748b; font-size: 14px; font-weight: 800; }
+    .activity-card p { margin-top: 20px; color: #334155; line-height: 1.75; }
+    .check-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #020617;
+      flex: 0 0 auto;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .interests {
+      margin-top: 40px;
+      border-radius: 32px;
+      background: #020617;
+      color: #ffffff;
+      padding: 36px;
+    }
+    .interests-grid { display: grid; grid-template-columns: 0.7fr 1.3fr; gap: 24px; align-items: center; }
+    .interests h2 { margin: 0; font-size: 26px; }
+    .interests p { color: #cbd5e1; margin-bottom: 0; }
+    .interest-list { display: flex; flex-wrap: wrap; gap: 12px; }
+    .interest-chip { border-radius: 999px; background: rgba(255,255,255,0.1); color: #f1f5f9; padding: 9px 16px; font-size: 14px; font-weight: 700; }
+    .footer { border-top: 1px solid #e2e8f0; background: #ffffff; }
+    .footer-inner { max-width: 1152px; margin: 0 auto; padding: 32px 20px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .footer-name { font-weight: 900; color: #020617; }
+    .footer-subtitle { font-size: 14px; color: #64748b; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 12px; }
+    .footer-link { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: #f1f5f9; color: #475569; text-decoration: none; padding: 9px 16px; font-size: 14px; font-weight: 800; }
+    .footer-link:hover { background: #e2e8f0; }
+    @media (max-width: 800px) {
+      .nav-links { display: none; }
+      .mobile-dots { display: flex; }
+      .hero-grid, .about-grid, .strengths-grid, .experience-grid, .activity-grid, .interests-grid { grid-template-columns: 1fr; }
+      .hero-grid { padding-top: 64px; padding-bottom: 64px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 520px) {
+      .stats-grid, .strength-list { grid-template-columns: 1fr; }
+      .brand-subtitle { font-size: 10px; letter-spacing: 0.14em; }
+      .hero h1, .page-header h1 { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <button class="brand-button" onclick="showPage('home')">
+        <div class="brand-name">Andrew DiStefano</div>
+        <div class="brand-subtitle">Economics · Finance · Strategy</div>
+      </button>
+      <div class="nav-links">
+        <button class="nav-button active" data-page-button="home" onclick="showPage('home')">Home</button>
+        <button class="nav-button" data-page-button="experience" onclick="showPage('experience')">Work Experience</button>
+        <button class="nav-button" data-page-button="activities" onclick="showPage('activities')">Activities</button>
+      </div>
+      <div class="mobile-dots">
+        <button class="mobile-dot active" data-page-dot="home" onclick="showPage('home')" aria-label="Home"></button>
+        <button class="mobile-dot" data-page-dot="experience" onclick="showPage('experience')" aria-label="Work Experience"></button>
+        <button class="mobile-dot" data-page-dot="activities" onclick="showPage('activities')" aria-label="Activities"></button>
+      </div>
+    </div>
+  </nav>
+
+  <div id="home" class="page active">
+    <header class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="pill pill-dark"><span>★</span> Northwestern University · Economics · Class of 2026</div>
+          <h1>Analytical, driven, and ready to build meaningful business impact.</h1>
+          <p>I am Andrew DiStefano, an Economics major at Northwestern University with experience across private equity strategy consulting, equity research, accounting, and real estate finance. I bring a high-energy, dive-right-in approach to problem solving, combining quantitative discipline with clear communication and team-first leadership.</p>
+          <div class="hero-actions">
+            <button class="button button-white" onclick="showPage('experience')">View Experience <span style="margin-left: 8px;">→</span></button>
+            <button class="button button-outline" onclick="showPage('activities')">Explore Activities</button>
+          </div>
+        </div>
+        <div class="headshot-wrap">
+          <div class="headshot-card">
+            <div class="headshot-frame">
+              <img src="https://i.imgur.com/D02mwAq.jpg" alt="Andrew DiStefano headshot" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="main-section">
+      <div class="about-grid">
+        <div>
+          <h2 class="section-title">About Me</h2>
+          <p class="muted">I am a student, analyst, teammate, and builder who likes to take on ambitious challenges before every detail is perfectly mapped out. That mindset has shaped my experience across consulting, investing, leadership, athletics, and service.</p>
+        </div>
+        <div class="card">
+          <div class="card-content">
+            <p>At Northwestern, I study Economics while building a practical foundation in finance, strategy, and leadership. My professional experiences have exposed me to the demands of private equity diligence, public equity analysis, corporate accounting, and real estate operations. Across each role, I have focused on becoming someone who can quickly understand a problem, organize the data, communicate the story, and help a team move toward a better decision.</p>
+            <p>Outside the classroom, I helped found and lead Phi Gamma Nu, contribute as an analyst with 180 Degrees Consulting, and stay active through club baseball, intramural sports, fraternity involvement, and service organizations. I am most energized by environments where preparation, competitiveness, and character matter.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="card"><div class="card-content"><div class="stat-number">36</div><div class="stat-label">ACT Score</div></div></div>
+        <div class="card"><div class="card-content"><div class="stat-number">3.7</div><div class="stat-label">Northwestern GPA</div></div></div>
+        <div class="card"><div class="card-content"><div class="stat-number">4.0</div><div class="stat-label">University of Florida GPA</div></div></div>
+        <div class="card"><div class="card-content"><div class="stat-number">2026</div><div class="stat-label">Expected Graduation</div></div></div>
+      </div>
+
+      <section class="strengths">
+        <div class="strengths-grid">
+          <div>
+            <h3>Core Strengths</h3>
+            <p>A blend of analytical ability, leadership, and practical business judgment developed through internships, campus organizations, and hands-on operating roles.</p>
+          </div>
+          <div class="strength-list">
+            <div class="strength-item">Financial Analysis</div>
+            <div class="strength-item">Strategic Research</div>
+            <div class="strength-item">Client-Ready Communication</div>
+            <div class="strength-item">Leadership & Recruiting</div>
+            <div class="strength-item">Market Sizing</div>
+            <div class="strength-item">Investment Thinking</div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <main id="experience" class="page main-section">
+    <div class="page-header">
+      <div class="pill pill-light"><span>💼</span> Work Experience</div>
+      <h1>Experience across strategy, investing, accounting, and real estate operations.</h1>
+      <p>My professional background reflects a broad and practical business foundation: analyzing markets and acquisition targets, researching public equities, supporting corporate accounting workflows, and managing financial records for a real estate business.</p>
+    </div>
+
+    <div class="experience-list">
+      <article class="card experience-card">
+        <div class="experience-grid">
+          <div class="experience-left">
+            <div class="icon-badge icon-light">PE</div>
+            <h2>DPO &amp; Co.</h2>
+            <div class="role">Private Equity Strategy Consulting &amp; Principal Investing Intern</div>
+            <div class="meta"><div>June 2025 – August 2025</div><div>📍 Chicago, IL</div></div>
+          </div>
+          <div class="experience-right">
+            <p>Worked at the intersection of private equity, strategy consulting, and principal investing, supporting diligence efforts for middle-market opportunities. Built market maps, evaluated competitive landscapes, synthesized customer and industry insights, and translated complex findings into clear, client-ready investment recommendations.</p>
+            <ul class="clean-list">
+              <li><span class="bullet-dot"></span><span>Conducted market sizing, competitive analysis, customer segmentation, and customer interviews to support buy-side due diligence.</span></li>
+              <li><span class="bullet-dot"></span><span>Built Excel-based financial models and operating frameworks to evaluate acquisition targets and forecast post-acquisition performance.</span></li>
+              <li><span class="bullet-dot"></span><span>Created polished investment memos and presentation materials that summarized strategic risks, growth levers, and value creation opportunities.</span></li>
+              <li><span class="bullet-dot"></span><span>Participated in client meetings and worked closely with project teams to deliver actionable recommendations under tight deadlines.</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="card experience-card">
+        <div class="experience-grid">
+          <div class="experience-left">
+            <div class="icon-badge icon-light">EQ</div>
+            <h2>Martin Investment Management, LLC</h2>
+            <div class="role">Equity Analyst Intern</div>
+            <div class="meta"><div>June 2024 – August 2024</div><div>📍 Evanston, IL</div></div>
+          </div>
+          <div class="experience-right">
+            <p>Developed investment research and analytical judgment at an equity-oriented investment adviser. Evaluated public companies through a combination of fundamental analysis, industry research, and competitive positioning to support investment decision-making.</p>
+            <ul class="clean-list">
+              <li><span class="bullet-dot"></span><span>Conducted equity research and financial analysis on public companies to develop investment recommendations.</span></li>
+              <li><span class="bullet-dot"></span><span>Presented security recommendations and strategic insights to the investment committee, contributing to active portfolio discussions.</span></li>
+              <li><span class="bullet-dot"></span><span>Analyzed company fundamentals, industry trends, and competitive dynamics to support high-conviction investment theses.</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="card experience-card">
+        <div class="experience-grid">
+          <div class="experience-left">
+            <div class="icon-badge icon-light">AC</div>
+            <h2>Watsco, Inc.</h2>
+            <div class="role">Accounting Coordinator – Summer Intern</div>
+            <div class="meta"><div>June 2023 – August 2023</div><div>📍 Miami, FL</div></div>
+          </div>
+          <div class="experience-right">
+            <p>Gained hands-on corporate finance and accounting experience at a Fortune 500 company and the largest distributor of HVAC/R equipment. Supported internal reporting, expense review, corporate record organization, and financial schedule preparation.</p>
+            <ul class="clean-list">
+              <li><span class="bullet-dot"></span><span>Reviewed weekly employee expense reports for policy compliance and accuracy.</span></li>
+              <li><span class="bullet-dot"></span><span>Organized corporate records and assisted with goodwill amortization analysis.</span></li>
+              <li><span class="bullet-dot"></span><span>Compiled revenue and expense schedules to support corporate accounting workflows.</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="card experience-card">
+        <div class="experience-grid">
+          <div class="experience-left">
+            <div class="icon-badge icon-light">RE</div>
+            <h2>VENA Properties LLC</h2>
+            <div class="role">Bookkeeper</div>
+            <div class="meta"><div>June 2018 – Present</div><div>📍 Hollywood, FL</div></div>
+          </div>
+          <div class="experience-right">
+            <p>Manage bookkeeping and financial administration for a family-owned residential rental real estate business. This long-term role strengthened practical financial discipline, attention to detail, and comfort with ownership-level responsibility.</p>
+            <ul class="clean-list">
+              <li><span class="bullet-dot"></span><span>Manage bookkeeping, accounts payable, accounts receivable, and reconciliations.</span></li>
+              <li><span class="bullet-dot"></span><span>Maintain accurate records to support reliable financial statements and operating visibility.</span></li>
+              <li><span class="bullet-dot"></span><span>Developed early exposure to real estate operations, cash flow management, and small-business finance.</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <main id="activities" class="page main-section">
+    <div class="page-header">
+      <div class="pill pill-light"><span>🏆</span> Activities &amp; Leadership</div>
+      <h1>The people, teams, and experiences that shape who I am.</h1>
+      <p>Outside the classroom and my internships, I have tried to stay involved in things that challenge me, connect me with great people, and give me opportunities to lead. These experiences reflect my personality just as much as my resume: competitive, curious, team-oriented, and always looking for ways to contribute.</p>
+    </div>
+
+    <div class="activity-grid">
+      <article class="card activity-card">
+        <div class="card-content">
+          <div class="activity-top"><div class="icon-badge icon-dark">🤝</div><span class="tag">Leadership &amp; Recruiting</span></div>
+          <h2>Phi Gamma Nu Professional Development Organization</h2>
+          <div class="activity-meta">Vice President &amp; Founder · January 2024 – Present</div>
+          <p>I helped launch Phi Gamma Nu to create a stronger professional community for students interested in business, finance, consulting, and leadership. A big part of my role has been building the organization from the ground up, bringing people together, and creating opportunities that help members grow professionally and personally.</p>
+          <ul class="clean-list">
+            <li><span class="check-icon">✓</span><span>Help lead external operations, recruitment, committees, and member programming.</span></li>
+            <li><span class="check-icon">✓</span><span>Coordinate outreach with professionals, guest speakers, firms, and alumni.</span></li>
+            <li><span class="check-icon">✓</span><span>Help create a supportive environment where students can build confidence, relationships, and career readiness.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card activity-card">
+        <div class="card-content">
+          <div class="activity-top"><div class="icon-badge icon-dark">📊</div><span class="tag">Consulting &amp; Problem Solving</span></div>
+          <h2>180 Degrees Consulting</h2>
+          <div class="activity-meta">Analyst · November 2023 – Present</div>
+          <p>Through 180 Degrees Consulting, I get to work with mission-driven organizations that are trying to solve real business and operational challenges. I enjoy the mix of research, teamwork, client interaction, and turning messy problems into practical recommendations.</p>
+          <ul class="clean-list">
+            <li><span class="check-icon">✓</span><span>Conduct research and analysis for client projects, including work with Camp Kesem.</span></li>
+            <li><span class="check-icon">✓</span><span>Collaborate with project teams to organize findings and move workstreams forward.</span></li>
+            <li><span class="check-icon">✓</span><span>Help translate research into clear, useful recommendations clients can actually act on.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card activity-card">
+        <div class="card-content">
+          <div class="activity-top"><div class="icon-badge icon-dark">🌟</div><span class="tag">Campus &amp; Community</span></div>
+          <h2>Leadership, Service &amp; Campus Involvement</h2>
+          <div class="activity-meta">Student Leader &amp; Community Contributor · 2019 – Present</div>
+          <p>Outside of academics and work, I have always tried to stay involved in organizations that let me meet new people, contribute to a team, and be part of something bigger than myself. These experiences have shaped how I lead, communicate, and build relationships.</p>
+          <ul class="clean-list">
+            <li><span class="check-icon">✓</span><span>Participated in Sigma Chi Fraternity, Investment Management Club, Florida Cryptocurrency and Alternative Assets Club, and Student Government as a Gator Party Ambassador.</span></li>
+            <li><span class="check-icon">✓</span><span>Served as Craig’s Pantry Volunteer Coordinator from 2019 to 2022, helping organize service efforts and community support.</span></li>
+            <li><span class="check-icon">✓</span><span>Stayed active through NU Club Baseball and intramural sports including softball, flag football, soccer, and basketball.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card activity-card">
+        <div class="card-content">
+          <div class="activity-top"><div class="icon-badge icon-dark">🏆</div><span class="tag">Achievement &amp; Drive</span></div>
+          <h2>Honors &amp; Recognition</h2>
+          <div class="activity-meta">Academic and Competitive Achievement · Ongoing</div>
+          <p>I have always been motivated by competition, preparation, and pushing myself to perform at a high level. These academic and competitive recognitions reflect that mindset and the effort I try to bring to everything I take on.</p>
+          <ul class="clean-list">
+            <li><span class="check-icon">✓</span><span>Earned a 36 ACT score, Dean’s List recognition, and a 3.7 GPA at Northwestern University.</span></li>
+            <li><span class="check-icon">✓</span><span>Earned a 4.0 GPA at the University of Florida, with President’s Honor Roll and Dean’s List recognition.</span></li>
+            <li><span class="check-icon">✓</span><span>Received honors including Phi Eta Sigma National Honor Society, AP Scholar with Distinction, National Merit Commended Scholar, and 1st Place in the Warrington Welcome Freshman Case Competition.</span></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+
+    <section class="interests">
+      <div class="interests-grid">
+        <div>
+          <h2>A little more about me</h2>
+          <p>I like staying active, competing, and having interests outside of school and work.</p>
+        </div>
+        <div class="interest-list">
+          <span class="interest-chip">🤿 Scuba diving</span>
+          <span class="interest-chip">🏈 Fantasy football</span>
+          <span class="interest-chip">💪 Fitness</span>
+          <span class="interest-chip">🎣 Fishing</span>
+          <span class="interest-chip">⭐ Star Wars</span>
+          <span class="interest-chip">🎴 Pokémon</span>
+          <span class="interest-chip">🟣 Baltimore Ravens</span>
+          <span class="interest-chip">🔥 Miami Heat</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-name">Andrew DiStefano</div>
+        <div class="footer-subtitle">Northwestern University · Economics · Class of 2026</div>
+      </div>
+      <div class="footer-links">
+        <a class="footer-link" href="mailto:andrewdistefano2026@u.northwestern.edu">✉ Email Me</a>
+        <a class="footer-link" href="https://www.linkedin.com/in/andrewvdistefano/" target="_blank" rel="noreferrer">in LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(function(page) {
+        page.classList.remove('active');
+      });
+      document.getElementById(pageId).classList.add('active');
+
+      document.querySelectorAll('[data-page-button]').forEach(function(button) {
+        button.classList.toggle('active', button.getAttribute('data-page-button') === pageId);
+      });
+
+      document.querySelectorAll('[data-page-dot]').forEach(function(dot) {
+        dot.classList.toggle('active', dot.getAttribute('data-page-dot') === pageId);
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
